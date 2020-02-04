@@ -1,0 +1,16 @@
+html, body{
+    background-color: aqua;
+    font-family: sans-serif;
+    font-size :15px;
+}
+
+.container{
+    position: relative;
+    margin-top: 8rem;
+    margin-left: 30rem;
+}
+
+.turno {
+    font-size: 3rem;
+    color: rebeccapurple;
+}

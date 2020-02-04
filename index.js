@@ -22,57 +22,61 @@ const state={matriz : [
 const renderGrid = ({matriz,turno}) => {
     const boxSize = 8
     const root = document.getElementById('root');
-    for (i=0;i<boxSize;i++){
+    matriz.map( (lista,i) => {
         const line = document.createElement("div");
-        line.style.width = String(boxSize*52)+"px";
-        for(j=0;j<boxSize;j++){
-            const k = document.createElement("div")
-            k.id = `${i}${j}`
-            if (matriz[i][j]==1){
-                k.style.backgroundColor= "White"
-            } else if (matriz[i][j] == -1){
-                k.style.backgroundColor = "Black"
-            }else{
-                k.style.backgroundColor = "Green"
+        line.style.width = String(boxSize * 52) + "px";
+        lista.map( (caja,j) => {
+                const k = document.createElement("div")
+                k.id = `${i}${j}`
+                k.style.backgroundColor = caja=== 1 ? "White" : (caja == -1 ? "Black" : "Green")
+                k.style.width = "50px"
+                k.style.height = "50px"
+                k.style.border = "1px solid black"
+                k.style.float = "left"
+                k.setAttribute("onClick", "isValid(this,state)")
+                line.appendChild(k)
             }
-            k.style.width="50px"
-            k.style.height="50px"
-            k.style.border="1px solid black"
-            k.style.float ="left"
-            k.setAttribute("onClick", "isValid(this,state)")
-            line.appendChild(k)
+        )
+        root.appendChild(line)
         }
-        root.appendChild(line);
-    }
+    )
 }
 
-function onClick(box){
-    console.log(box.id[1])
+//function onClick(box){
+//    console.log(box.id)
+//}
+
+function cambiarTurno({matriz,turno}){
+    let player = "";
+    state.turno=turno+1;
+    const root = document.getElementById('root');
+    player = (state.turno%2)  == 0 ? "Turno piezas negras" : "Turno piezas blancas"
+    let div = document.getElementById('turn')
+    div.innerHTML=player;
+    //console.log("Turno "+state.turno)
 }
 
 function isValid(box, {matriz, turno}){
     let hor = false, ver = false, diag = false;
-    let buscar = 0, size = matriz.length;
-    if (turno==0){
-        buscar = 1
-    }else{
-        buscar = -1
-    }
-
-    if(box.id[1]>0 && matriz[box.id[0]][box.id[1]-1] == buscar){
-        let fin = true, contador = box.id[1]-1;
-        while (fin && contador >=0){
-            hor = (matriz[box.id[0]][box.id[1] - contador] == buscar*(-1))
-            contador++
-            if (matriz[box.id[0]][box.id[1] - contador] == 0){fin == false}
+    let buscar = turno == 0 ? 1 : -1;
+    size = matriz.length;
+    //Evaluo hacia la izquierda
+    let inicio = parseInt(box.id[1])-1
+    let sigue = true
+    while(inicio>=0 && sigue == true){
+        if (matriz[parseInt(box.id[0])][inicio]=== buscar){
+            hor = true
         }
+        else{
+            final = inicio  
+            sigue = false
+            console.log(final)
+        }
+        inicio--  
     }
-    console.log(hor)
-    return hor || ver || diag
+    return hor //|| ver || diag
 }
 
 renderGrid(state)
-
-// state.matriz = _.zip(...state.matriz)
-
-// renderGrid(state)
+const root = document.getElementById('root');
+root.setAttribute("onClick","cambiarTurno(state)")
